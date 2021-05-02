@@ -43,19 +43,11 @@ function map(array, fn) {
    reduce([1, 2, 3], (all, current) => all + current) // 6
  */
 function reduce(array, fn, initial) {
-  if (initial === undefined) {
-    let result = array[0];
-    for (let i = 1; i < array.length; i++) {
-      result = fn(result, array[i], i, array);
-    }
-    return result;
-  } else {
-    let result = initial;
-    for (let i = 0; i < array.length; i++) {
-      result = fn(result, array[i], i, array);
-    }
-    return result;
+  let result = initial ? initial : array[0];
+  for (let i = initial ? 0 : 1; i < array.length; i++) {
+    result = fn(result, array[i], i, array);
   }
+  return result;
 }
 
 /*
