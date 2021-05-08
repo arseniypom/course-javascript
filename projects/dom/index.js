@@ -207,7 +207,39 @@ function collectDOMStat(root, result = { tags: {}, classes: {}, texts: 0 }) {
      nodes: [div]
    }
  */
-function observeChildNodes(where, fn) {}
+function observeChildNodes(where, fn) {
+  const config = {
+    childList: true,
+    subtree: true,
+  };
+  const callback = (mutationsList, observer) => {
+    for (const mutation of mutationsList) {
+      if (mutation.type === 'childList') {
+        if (mutation.addedNodes.length > 0) {
+          const addedNodesArray = [];
+          for (const node of mutation.addedNodes.values()) {
+            addedNodesArray.push(node);
+          }
+          fn({
+            type: 'insert',
+            nodes: addedNodesArray,
+          });
+        } else if (mutation.removedNodes.length > 0) {
+          const removedNodesArray = [];
+          for (const node of mutation.removedNodes.values()) {
+            removedNodesArray.push(node);
+          }
+          fn({
+            type: 'remove',
+            nodes: removedNodesArray,
+          });
+        }
+      }
+    }
+  };
+  const observer = new MutationObserver(callback);
+  observer.observe(where, config);
+}
 
 export {
   createDivWithText,
