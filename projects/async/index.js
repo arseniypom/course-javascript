@@ -29,7 +29,7 @@
    homeworkContainer.appendChild(newDiv);
  */
 
-// import './towns.html';
+import './towns.html';
 
 const homeworkContainer = document.querySelector('#app');
 
@@ -42,7 +42,9 @@ const homeworkContainer = document.querySelector('#app');
 function loadTowns() {
   return fetch('https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json')
     .then((res) => res.json())
-    .then((json) => json.sort((a, b) => (a.name > b.name ? 1 : -1)));
+    .then((json) => {
+      return json.sort((a, b) => (a.name > b.name ? 1 : -1));
+    });
 }
 
 /*
@@ -57,7 +59,7 @@ function loadTowns() {
    isMatching('Moscow', 'Moscov') // false
  */
 function isMatching(full, chunk) {
-  return full.toLowerCase().indexOf(chunk.toLowerCase());
+  return full.toLowerCase().indexOf(chunk.toLowerCase()) !== -1;
 }
 
 /* Блок с надписью "Загрузка" */
@@ -74,16 +76,48 @@ const filterInput = homeworkContainer.querySelector('#filter-input');
 const filterResult = homeworkContainer.querySelector('#filter-result');
 
 retryButton.addEventListener('click', () => {
-  console.log(
-    loadingBlock,
-    loadingFailedBlock,
-    filterBlock,
-    filterResult,
-    loadTowns,
-    isMatching
-  );
+  tryToLoad();
 });
 
-filterInput.addEventListener('input', function () {});
+filterInput.addEventListener('input', function () {
+  displayCities(this.value);
+});
 
-// export { loadTowns, isMatching };
+loadingFailedBlock.classList.add('hidden');
+filterBlock.classList.add('hidden');
+
+let cities = [];
+
+function tryToLoad() {
+  loadTowns()
+    .then((loadedCities) => {
+      cities = loadedCities;
+      loadingBlock.classList.add('hidden');
+      filterBlock.classList.remove('hidden');
+    })
+    .catch(() => {
+      loadingBlock.classList.add('hidden');
+      loadingFailedBlock.classList.remove('hidden');
+      filterBlock.classList.add('hidden');
+    });
+}
+
+function displayCities(inputText) {
+  filterResult.innerHTML = '';
+
+  if (inputText) {
+    const result = cities.filter((city) => {
+      return isMatching(city.name, inputText);
+    });
+
+    result.forEach((city) => {
+      const cityDiv = document.createElement('div');
+      cityDiv.innerText = city.name;
+      filterResult.appendChild(cityDiv);
+    });
+  }
+}
+
+tryToLoad();
+
+export { loadTowns, isMatching };
