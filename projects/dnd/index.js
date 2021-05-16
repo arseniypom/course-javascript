@@ -21,7 +21,27 @@ const homeworkContainer = document.querySelector('#app');
 
 document.addEventListener('mousemove', (e) => {});
 
-export function createDiv() {}
+export function createDiv() {
+  const resultDiv = document.createElement('div');
+  const windowWidth = window.innerWidth;
+  const windowHeight = window.innerHeight;
+  resultDiv.classList.add('draggable-div');
+  const divStyle = {
+    color: '#' + Math.floor(Math.random() * 16777215).toString(16),
+    width: Math.floor(Math.random() * windowWidth),
+    height: Math.floor(Math.random() * windowHeight),
+    left: Math.floor(Math.random() * windowWidth),
+    top: Math.floor(Math.random() * windowHeight),
+  };
+  // const randomPosition =
+
+  resultDiv.setAttribute(
+    'style',
+    `top: ${divStyle.top}px; left: ${divStyle.left}px; background-color:${divStyle.color}; width: ${divStyle.width}px;  height: ${divStyle.height}px;`
+  );
+
+  return resultDiv;
+}
 
 const addDivButton = homeworkContainer.querySelector('#addDiv');
 
