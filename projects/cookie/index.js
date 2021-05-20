@@ -125,9 +125,6 @@ addButton.addEventListener('click', () => {
 
   document.cookie = `${cookieName}=${cookieValue}`;
   updateCookiesTable(updateCookiesObj(), filterNameInput.value);
-
-  // addNameInput.value = '';
-  // addValueInput.value = '';
 });
 
 listTable.addEventListener('click', (e) => {});
